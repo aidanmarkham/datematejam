@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraFly : MonoBehaviour {
     public float speed;
+    public string horizontalAxis;
+    public string verticalAxis;
 	// Use this for initialization
 	void Start () {
 		
@@ -11,7 +13,7 @@ public class CameraFly : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        transform.position += GameObject.Find("Main Camera").transform.forward * Input.GetAxisRaw("Vertical") * speed * Time.deltaTime;
-        transform.position += GameObject.Find("Main Camera").transform.right * Input.GetAxisRaw("Horizontal") * speed * Time.deltaTime;
+        transform.position += GameObject.Find("Main Camera").transform.forward * Input.GetAxisRaw(verticalAxis) * speed * Time.deltaTime;
+        transform.position += GameObject.Find("Main Camera").transform.right * Input.GetAxisRaw(horizontalAxis) * speed * Time.deltaTime;
     }
 }

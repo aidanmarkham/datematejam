@@ -30,7 +30,8 @@ public class CharacterDriver : MonoBehaviour {
         {
             transform.rotation = lookDir;
         }
-        animator.speed = speed * animSpeed;
+        animator.SetFloat("PlayerSpeed", speed * animSpeed);
+        animator.SetBool("IsWalking", speed * animSpeed > 0.1f);
         
     }
 }
