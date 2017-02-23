@@ -13,6 +13,7 @@ public class CharacterDriver : MonoBehaviour {
     private float speed;
     public float animSpeed;
     private Animator animator;
+    public float gravity;
     
 	// Use this for initialization
 	void Start () {
@@ -32,6 +33,7 @@ public class CharacterDriver : MonoBehaviour {
         }
         animator.SetFloat("PlayerSpeed", speed * animSpeed);
         animator.SetBool("IsWalking", speed * animSpeed > 0.1f);
-        
+
+        characterController.Move(new Vector3(0, -gravity * Time.deltaTime, 0));
     }
 }
