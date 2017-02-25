@@ -21,7 +21,7 @@ public class CameraRigCenter : MonoBehaviour {
 	void Update () {
         targetPosition = (player1.transform.position + player2.transform.position) / 2;
 
-        transform.position += (targetPosition - transform.position) * speed;
+        transform.position += (targetPosition - transform.position) * speed * Time.deltaTime;
 
         
         

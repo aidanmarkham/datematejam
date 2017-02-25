@@ -35,7 +35,7 @@ public class RenderTextureManager : MonoBehaviour
         float renderWidth = textureCamera.aspect * cameraHeight; // calculate the correct width
         renderTexture = new RenderTexture((int)renderWidth, cameraHeight, 24);//create the render texture
         renderTexture.name = "Programmattically created texture"; //name it for ease of use
-        renderTexture.filterMode = FilterMode.Point; //set the filter mode for sharp pixels
+        renderTexture.filterMode = FilterMode.Trilinear; //set the filter mode for sharp pixels
         renderTexture.useMipMap = false;
         renderTexture.Create(); //create the texture
         gameCamera.targetTexture = renderTexture; //set the camera to render to texture

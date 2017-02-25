@@ -64,7 +64,7 @@ public class CharacterDriver : MonoBehaviour {
                 {
                     if (playerWait)
                     {
-                        Debug.Log((transform.position - player.transform.position).magnitude + "<" + distance);
+
                         if ((transform.position - player.transform.position).magnitude < distance)
                         {
                             currentNode += 1;
