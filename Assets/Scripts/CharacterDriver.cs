@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class CharacterDriver : MonoBehaviour {
     public GameObject cameraRig;
+    public GameObject center;
     public bool isPlayer;
+    public GameObject otherPlayer;
 
     [Space(10)]
     private CharacterController characterController;
@@ -21,10 +23,18 @@ public class CharacterDriver : MonoBehaviour {
     public float moveSpeed;
     public string horizontalAxis;
     public string verticalAxis;
+    public string handHoldAxis;
     private float speed;
 
     private Vector3 oldPosition;
     public float gravity;
+
+    public bool holdsLeftHand;
+    public bool holdingHands;
+    public float holdingHandsDistance;
+    public float holdingHandsThreshold;
+    private float handInputOld;
+
 
     [Space(20)]
     [Header("Actor Things")]
@@ -34,14 +44,24 @@ public class CharacterDriver : MonoBehaviour {
     public bool playerWait;
     public GameObject player;
     public float distance;
+    public Transform startCenter;
 
+    [Space(20)]
+    [Header("handHolding Things")]
+    public bool handHoldController;
+    public GameObject player1;
+    public GameObject player2;
 
     // Use this for initialization
     void Start () {
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
+        if (isPlayer)
+        {
+            startCenter = center.transform;
+        }
         
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -50,10 +70,87 @@ public class CharacterDriver : MonoBehaviour {
         {
             //moves the character based on input;
             characterController.Move(cameraRig.transform.TransformDirection(new Vector3(Input.GetAxis(horizontalAxis), 0, Input.GetAxis(verticalAxis))) * moveSpeed * Time.deltaTime);
+
+            #region handholding
+            if (Input.GetAxis(handHoldAxis) == 1)
+            {               
+                if(Input.GetAxis(handHoldAxis)!=handInputOld)
+                {
+                    startCenter = center.transform;
+                }
+                holdingHands = false;
+                Vector3 moveVector;
+                Vector3 targetPosition;
+                float distanceBetweenPlayers;
+                if (holdsLeftHand)
+                {
+                    animator.SetBool("LHand", true);
+                    targetPosition = startCenter.transform.position + startCenter.transform.right * holdingHandsDistance;
+                    moveVector = targetPosition - transform.position;
+                    distanceBetweenPlayers = moveVector.magnitude;
+                }
+                else
+                {
+                    animator.SetBool("RHand", true);
+                    targetPosition = startCenter.transform.position - startCenter.transform.right * holdingHandsDistance;
+                    moveVector = targetPosition  - transform.position;
+                    distanceBetweenPlayers = moveVector.magnitude;
+                    
+                }
+
+
+
+                /* code to move players together before snapping them onto the other controller
+                if (distanceBetweenPlayers > holdingHandsThreshold)
+                {
+                    moveVector = moveVector.normalized * moveSpeed * Time.deltaTime;
+                    moveVector = Vector3.ClampMagnitude(moveVector, distanceBetweenPlayers);
+                    characterController.Move(moveVector);
+                    holdingHands = false;
+                }
+                else
+                {
+                    transform.position = targetPosition;
+                    transform.rotation = startCenter.rotation;
+                    holdingHands = true;
+                }
+                
+                *///*
+                transform.position = targetPosition;
+                transform.rotation = startCenter.rotation;
+                holdingHands = true;
+                //*/
+            }
+            else
+            {
+                animator.SetBool("LHand", false);
+                animator.SetBool("RHand", false);
+                holdingHands = false;
+            }
+            handInputOld = Input.GetAxis(handHoldAxis);
+
+            #endregion
+
+            //updates animation states
+            animator.SetFloat("PlayerSpeed", speed * animSpeed);
+            animator.SetBool("IsWalking", speed * animSpeed > 0.1f);
+        }
+        else if (handHoldController)
+        {
+            if(player1.GetComponent<CharacterDriver>().holdingHands && player2.GetComponent<CharacterDriver>().holdingHands)
+            {
+                float horizontal = (Input.GetAxis(player1.GetComponent<CharacterDriver>().horizontalAxis) + Input.GetAxis(player2.GetComponent<CharacterDriver>().horizontalAxis)) / 2;
+                float vertical = (Input.GetAxis(player1.GetComponent<CharacterDriver>().verticalAxis) + Input.GetAxis(player2.GetComponent<CharacterDriver>().verticalAxis)) / 2;
+                Debug.Log("Horizontal: " + horizontal + " Vertical: " + vertical);
+                characterController.Move(cameraRig.transform.TransformDirection(new Vector3(horizontal, 0, vertical)) * moveSpeed * Time.deltaTime);
+            }
         }
         else
         {
             //do whatever non player characters do
+            //updates animation states
+            animator.SetFloat("PlayerSpeed", speed * animSpeed);
+            animator.SetBool("IsWalking", speed * animSpeed > 0.1f);
             if (currentNode < nodes.Length)
             {
                 if ((nodes[currentNode].transform.position - transform.position).magnitude > threshold )
@@ -84,15 +181,13 @@ public class CharacterDriver : MonoBehaviour {
         
         //sets face direction
         
-        if(speed!=0)
+        if(speed!=0 && !holdingHands)
         {
             lookDir = Quaternion.LookRotation(cameraRig.transform.TransformDirection((transform.position - oldPosition).normalized));
             transform.rotation = lookDir;
         }
 
-        //updates animation states
-        animator.SetFloat("PlayerSpeed", speed * animSpeed);
-        animator.SetBool("IsWalking", speed * animSpeed > 0.1f);
+        
 
         //applies gravity, updates oldposition
         characterController.Move(new Vector3(0, -gravity * Time.deltaTime, 0));
