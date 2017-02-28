@@ -17,7 +17,7 @@ public class TextScroller : MonoBehaviour
     public int stringIndex;
 
     public float alpha;
-
+    public bool showTheText;
     public AudioClip soundEffect;
     public AudioSource audioSource;
     // Use this for initialization
@@ -36,7 +36,7 @@ public class TextScroller : MonoBehaviour
         if (stage == Stage.Delay)
         {
             
-            if (timer > texts.First.Value.delay)
+            if (timer > texts.First.Value.delay && showTheText)
             {
                 timer = 0;
                 stage = Stage.Type;
@@ -94,6 +94,10 @@ public class TextScroller : MonoBehaviour
             {
                 stage = Stage.Delay;
                 
+            }
+            else
+            {
+                showTheText = false;    
             }
         }
 

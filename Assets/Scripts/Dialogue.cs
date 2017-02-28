@@ -8,8 +8,11 @@ public class Dialogue : MonoBehaviour {
     
     public GameObject[] dialogueBoxes;
     public GameObject[] texts;
-	// Use this for initialization
-	void Start () {
+    public bool[] leftSideTalking;
+    public MonoBehaviour goAfterDone;
+    public MeshRenderer sprite;
+    // Use this for initialization
+    void Start () {
 		
 	}
 	

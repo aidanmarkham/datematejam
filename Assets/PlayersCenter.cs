@@ -13,25 +13,28 @@ public class PlayersCenter : MonoBehaviour
     public float size;
     private float targetSize;
     public float scaleSpeed;
+    public CharacterController cc;
     // Use this for initialization
     void Start()
     {
-
+        cc = GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        cc.enabled = false;
         if (!player1.GetComponent<CharacterDriver>().holdingHands && !player2.GetComponent<CharacterDriver>().holdingHands)
         {
             transform.position = (player1.transform.position + player2.transform.position) / 2;
             transform.LookAt(transform.position + (player1.transform.forward + player2.transform.forward).normalized);
             targetSize = 0;
+            
         }
         else
         {
             targetSize = size;
-
+            cc.enabled = true;
             
         }
         currentSize += (targetSize - currentSize) * scaleSpeed * Time.deltaTime;

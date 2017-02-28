@@ -38,6 +38,7 @@ public class CharacterDriver : MonoBehaviour {
 
     [Space(20)]
     [Header("Actor Things")]
+    public bool go;
     public GameObject[] nodes;
     public int currentNode;
     public float threshold;
@@ -151,7 +152,7 @@ public class CharacterDriver : MonoBehaviour {
             //updates animation states
             animator.SetFloat("PlayerSpeed", speed * animSpeed);
             animator.SetBool("IsWalking", speed * animSpeed > 0.1f);
-            if (currentNode < nodes.Length)
+            if (currentNode < nodes.Length && go)
             {
                 if ((nodes[currentNode].transform.position - transform.position).magnitude > threshold )
                 {
@@ -181,7 +182,7 @@ public class CharacterDriver : MonoBehaviour {
         
         //sets face direction
         
-        if(speed!=0 && !holdingHands)
+        if(speed!=0 && !holdingHands && go)
         {
             lookDir = Quaternion.LookRotation(cameraRig.transform.TransformDirection((transform.position - oldPosition).normalized));
             transform.rotation = lookDir;
