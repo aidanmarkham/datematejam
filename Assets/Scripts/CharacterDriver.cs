@@ -34,6 +34,7 @@ public class CharacterDriver : MonoBehaviour {
     public float holdingHandsDistance;
     public float holdingHandsThreshold;
     private float handInputOld;
+    
 
 
     [Space(20)]
@@ -117,9 +118,12 @@ public class CharacterDriver : MonoBehaviour {
                 }
                 
                 *///*
-                transform.position = targetPosition;
-                transform.rotation = startCenter.rotation;
-                holdingHands = true;
+                if (distanceBetweenPlayers < holdingHandsThreshold && (otherPlayer.GetComponent<Animator>().GetBool("LHand") || otherPlayer.GetComponent<Animator>().GetBool("RHand")))
+                {
+                    transform.position = targetPosition;
+                    transform.rotation = startCenter.rotation;
+                    holdingHands = true;
+                }
                 //*/
             }
             else

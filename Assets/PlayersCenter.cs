@@ -23,19 +23,21 @@ public class PlayersCenter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         cc.enabled = false;
-        if (!player1.GetComponent<CharacterDriver>().holdingHands && !player2.GetComponent<CharacterDriver>().holdingHands)
-        {
-            transform.position = (player1.transform.position + player2.transform.position) / 2;
-            transform.LookAt(transform.position + (player1.transform.forward + player2.transform.forward).normalized);
-            targetSize = 0;
-            
-        }
-        else
+        if (player1.GetComponent<CharacterDriver>().holdingHands && player2.GetComponent<CharacterDriver>().holdingHands)
         {
             targetSize = size;
             cc.enabled = true;
             
+            
+        }
+        else
+        {
+            transform.position = (player1.transform.position + player2.transform.position) / 2;
+            transform.LookAt(transform.position + (player1.transform.forward + player2.transform.forward).normalized);
+            targetSize = 0;
+
         }
         currentSize += (targetSize - currentSize) * scaleSpeed * Time.deltaTime;
         currentSize = Mathf.Clamp(currentSize, 0, size);
