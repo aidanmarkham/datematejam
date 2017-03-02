@@ -7,9 +7,9 @@ public class DialogueManager : MonoBehaviour
     public Dialogue dialogue;
     public Dialogue lastDialogue;
     private int currentDialogue;
-    
-    public GameObject[] rightSide;
-    public GameObject[] leftSide;
+
+    public GameObject rightSide;
+    public GameObject leftSide;
     public float characterOffset;
     public Vector3 direction;
     public float initialDistance;
@@ -21,7 +21,7 @@ public class DialogueManager : MonoBehaviour
     public Vector3 endPositionOffset;
     public float snapSpeed;
 
-    
+
     // Use this for initialization
     void Start()
     {
@@ -31,26 +31,29 @@ public class DialogueManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
         
-        for (int i = 0; i < rightSide.Length; i++)
-        {
-            rightSide[i].transform.position = transform.position + (direction.normalized * initialDistance + direction.normalized * characterOffset * i);
-        }
-        for (int i = 0; i < leftSide.Length; i++)
-        {
-            leftSide[i].transform.position = transform.position - (direction.normalized * initialDistance + direction.normalized * characterOffset * i);
-        }
-        
+
+
 
 
         if (dialogue != lastDialogue)
         {
-            
+            leftSide = dialogue.leftPlayers[0];
+            rightSide = dialogue.rightPlayers[0];
+
             currentDialogue = 0;
             dialogue.sprite.enabled = false;
 
         }
+        if (leftSide != null && rightSide != null)
+        {
+            rightSide.transform.position = transform.position + direction.normalized * initialDistance;
 
+
+            leftSide.transform.position = transform.position - direction.normalized * initialDistance;
+        }
         if (dialogue != null)
         {
             blur.enabled = true;
@@ -58,15 +61,15 @@ public class DialogueManager : MonoBehaviour
             if (dialogue.dialogueBoxes[currentDialogue].active == false)
             {
                 dialogue.dialogueBoxes[currentDialogue].SetActive(true);
-                leftSide[0].GetComponent<Animator>().SetBool("Talking", dialogue.leftSideTalking[currentDialogue]);
-                rightSide[0].GetComponent<Animator>().SetBool("Talking", !dialogue.leftSideTalking[currentDialogue]);
+                leftSide.GetComponent<Animator>().SetBool("Talking", dialogue.leftSideTalking[currentDialogue]);
+                rightSide.GetComponent<Animator>().SetBool("Talking", !dialogue.leftSideTalking[currentDialogue]);
             }
             if (dialogue.texts[currentDialogue].GetComponent<TextTyper>().done)
             {
-                leftSide[0].GetComponent<Animator>().SetBool("Talking", false);
-                rightSide[0].GetComponent<Animator>().SetBool("Talking", false);
+                leftSide.GetComponent<Animator>().SetBool("Talking", false);
+                rightSide.GetComponent<Animator>().SetBool("Talking", false);
             }
-            if (dialogue.texts[currentDialogue].GetComponent<TextTyper>().done && (Input.GetAxis(continueAxis + "_P1") > .8 || Input.GetAxis(continueAxis + "_P2") > .8))
+            if (dialogue.texts[currentDialogue].GetComponent<TextTyper>().done && (Input.GetAxis(continueAxis) > .8f))
             {
                 dialogue.dialogueBoxes[currentDialogue].SetActive(false);
                 currentDialogue++;
@@ -82,7 +85,7 @@ public class DialogueManager : MonoBehaviour
         else
         {
             blur.enabled = false;
-            
+
             transform.position += ((startPosition + endPositionOffset) - transform.position) * snapSpeed * Time.deltaTime;
         }
 

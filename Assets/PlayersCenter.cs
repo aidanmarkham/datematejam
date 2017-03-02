@@ -14,10 +14,12 @@ public class PlayersCenter : MonoBehaviour
     private float targetSize;
     public float scaleSpeed;
     public CharacterController cc;
+    public AudioSource audioSource;
     // Use this for initialization
     void Start()
     {
         cc = GetComponent<CharacterController>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -42,6 +44,7 @@ public class PlayersCenter : MonoBehaviour
         currentSize += (targetSize - currentSize) * scaleSpeed * Time.deltaTime;
         currentSize = Mathf.Clamp(currentSize, 0, size);
         orb.transform.localScale = new Vector3(currentSize, currentSize, currentSize);
-        light.intensity = currentSize * lightScale;
+        audioSource.volume = targetSize * lightScale;
+        light.intensity = currentSize;
     }
 }

@@ -11,6 +11,8 @@ public class Dialogue : MonoBehaviour {
     public bool[] leftSideTalking;
     public MonoBehaviour goAfterDone;
     public MeshRenderer sprite;
+
+    
     // Use this for initialization
     void Start () {
 		
